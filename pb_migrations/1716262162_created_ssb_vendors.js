@@ -2,8 +2,8 @@
 migrate((db) => {
   const collection = new Collection({
     "id": "ln1p323ma0mpykd",
-    "created": "2024-05-19 15:01:57.067Z",
-    "updated": "2024-05-19 15:01:57.067Z",
+    "created": "2024-05-21 03:29:22.624Z",
+    "updated": "2024-05-21 03:29:22.624Z",
     "name": "ssb_vendors",
     "type": "base",
     "system": false,
@@ -14,7 +14,7 @@ migrate((db) => {
         "name": "vendorName",
         "type": "text",
         "required": true,
-        "presentable": false,
+        "presentable": true,
         "unique": false,
         "options": {
           "min": null,
@@ -51,7 +51,9 @@ migrate((db) => {
         }
       }
     ],
-    "indexes": [],
+    "indexes": [
+      "CREATE UNIQUE INDEX `idx_39qpEao` ON `ssb_vendors` (`vendorName`)"
+    ],
     "listRule": "",
     "viewRule": "",
     "createRule": "",

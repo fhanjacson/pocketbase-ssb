@@ -1,7 +1,7 @@
 /// <reference path="../pb_data/types.d.ts" />
 routerUse($apis.activityLogger($app))
 
-routerAdd("GET", "/custom_api/items", (c) => { return c.string(200, "hai") })
+routerAdd("GET", "/custom_api/items", (c) => { return c.string(200, "NOT YET IMPLEMENTED") })
 
 routerAdd("POST", "/custom_api/items", (c) => {
     try {

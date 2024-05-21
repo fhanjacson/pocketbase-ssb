@@ -2,8 +2,8 @@
 migrate((db) => {
   const collection = new Collection({
     "id": "1583yzvkdvhfa9l",
-    "created": "2024-05-19 15:01:57.066Z",
-    "updated": "2024-05-19 15:01:57.066Z",
+    "created": "2024-05-21 03:29:22.624Z",
+    "updated": "2024-05-21 03:29:22.624Z",
     "name": "ssb_groups",
     "type": "base",
     "system": false,
@@ -13,7 +13,7 @@ migrate((db) => {
         "id": "lfhgwhkp",
         "name": "groupName",
         "type": "text",
-        "required": false,
+        "required": true,
         "presentable": true,
         "unique": false,
         "options": {
@@ -23,7 +23,9 @@ migrate((db) => {
         }
       }
     ],
-    "indexes": [],
+    "indexes": [
+      "CREATE UNIQUE INDEX `idx_fOlk6FP` ON `ssb_groups` (`groupName`)"
+    ],
     "listRule": "",
     "viewRule": "",
     "createRule": "",

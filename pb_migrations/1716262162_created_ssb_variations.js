@@ -2,8 +2,8 @@
 migrate((db) => {
   const collection = new Collection({
     "id": "ryhiv1779z8oc3n",
-    "created": "2024-05-19 15:01:57.067Z",
-    "updated": "2024-05-19 15:01:57.067Z",
+    "created": "2024-05-21 03:29:22.624Z",
+    "updated": "2024-05-21 03:29:22.624Z",
     "name": "ssb_variations",
     "type": "base",
     "system": false,
@@ -43,8 +43,8 @@ migrate((db) => {
         "id": "qu2ezuc4",
         "name": "variationName",
         "type": "text",
-        "required": false,
-        "presentable": false,
+        "required": true,
+        "presentable": true,
         "unique": false,
         "options": {
           "min": null,
@@ -63,7 +63,7 @@ migrate((db) => {
         "options": {
           "min": null,
           "max": null,
-          "noDecimal": false
+          "noDecimal": true
         }
       },
       {
@@ -77,7 +77,7 @@ migrate((db) => {
         "options": {
           "min": null,
           "max": null,
-          "noDecimal": false
+          "noDecimal": true
         }
       },
       {
@@ -91,7 +91,7 @@ migrate((db) => {
         "options": {
           "min": null,
           "max": null,
-          "noDecimal": false
+          "noDecimal": true
         }
       }
     ],
