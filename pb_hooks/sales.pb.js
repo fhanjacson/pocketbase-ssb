@@ -80,7 +80,7 @@ routerAdd("POST", "/custom_api/sales", (c) => {
         })
     } catch (ex) {
         console.log(ex)
-        return new ApiError(500, "ERROR")
+        return new ApiError(500, `Error: ${ex}`)
     }
 })
 

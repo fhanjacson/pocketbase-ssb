@@ -1,7 +1,103 @@
 /// <reference path="../pb_data/types.d.ts" />
 routerUse($apis.activityLogger($app))
 
-routerAdd("GET", "/custom_api/items", (c) => { return c.string(200, "NOT YET IMPLEMENTED") })
+routerAdd("PUT", "/custom_api/items", (c) => {
+    try {
+        const data = $apis.requestInfo(c).data
+        $app.dao().runInTransaction((txDao) => {
+            const existingItem = txDao.findRecordById("ssb_items", data.id)
+            if (!existingItem) {
+                // throw "No Existing Record with specified Id found"
+                return new BadRequestError("No Existing Record with specified Id found")
+
+            }
+            if (data.itemVariationEnabled) {
+                if (!(data.expand.variationId.length > 0)) {
+                    return new BadRequestError("itemVariationEnabled is true but variationId.length is not more than 0")
+                }
+            }
+
+            const existingItemForm = new RecordUpsertForm($app, existingItem)
+            existingItemForm.setDao(txDao)
+
+            if (data.itemVariationEnabled && data.expand.variationId.length > 0) {
+                var upsertedVariationId = []
+
+                const variationCollection = txDao.findCollectionByNameOrId("ssb_variations")
+                for (let variation of data.expand.variationId) {
+                    if (variation.id) { //existing variation in db
+                        const existingVariation = txDao.findRecordById("ssb_variations", variation.id)
+                        if(!existingVariation) {
+                            throw "Variation id is defined, but cant be found on db"
+                        }
+                        const existingVariationForm = new RecordUpsertForm($app, existingVariation)
+                        existingVariationForm.setDao(txDao)
+                        existingVariationForm.loadData({
+                            itemId: data.id,
+                            variationCode: variation.variationCode,
+                            variationName: variation.variationName,
+                            // variationStock: variation.variationStock // cannot be edited
+                            variationBuyPrice: variation.variationBuyPrice,
+                            variationSellPrice: variation.variationSellPrice
+                        })
+                        existingVariationForm.submit()
+                        upsertedVariationId.push(existingVariation.id)
+                    } else {
+                        const newVariation = new Record(variationCollection)
+                        const newVariationForm = new RecordUpsertForm($app, newVariation)
+                        newVariationForm.setDao(txDao)
+                        newVariationForm.loadData({
+                            itemId: data.id,
+                            variationCode: variation.variationCode,
+                            variationName: variation.variationName,
+                            // variationStock: variation.variationStock // cannot be edited
+                            variationBuyPrice: variation.variationBuyPrice,
+                            variationSellPrice: variation.variationSellPrice
+                        })
+                        newVariationForm.submit()
+                        upsertedVariationId.push(newVariation.id)
+                    }
+                }
+            
+                existingItemForm.loadData({
+                    itemCode: data.itemCode,
+                    itemName: data.itemName,
+                    itemBuyPrice: undefined,
+                    itemSellPrice: undefined,
+                    groupId: data.groupId,
+                    vendorId: data.vendorId,
+                    itemStock: undefined,
+                    itemVariationEnabled: data.itemVariationEnabled, // cannot be edited for now
+                    variationId: upsertedVariationId
+                })
+            }
+
+            if(!data.itemVariationEnabled) {
+                existingItemForm.loadData({
+                    itemCode: data.itemCode,
+                    itemName: data.itemName,
+                    itemBuyPrice: data.itemBuyPrice,
+                    itemSellPrice: data.itemSellPrice,
+                    groupId: data.groupId,
+                    vendorId: data.vendorId,
+                    // itemStock: data.itemStock, // cannot be edited
+                    itemVariationEnabled: data.itemVariationEnabled, // cannot be edited for now
+                    variationId: upsertedVariationId
+                })
+            }
+            
+            existingItemForm.submit()
+
+
+            $apis.enrichRecord(c, txDao, existingItem, "variationId", "vendorId")
+            return c.json(200, existingItem)
+
+        })
+    } catch (ex) {
+        console.log(ex)
+        return new ApiError(500, `Error: ${ex}`)
+    }
+})
 
 routerAdd("POST", "/custom_api/items", (c) => {
     try {
@@ -70,7 +166,7 @@ routerAdd("POST", "/custom_api/items", (c) => {
         })
     } catch (ex) {
         console.log(ex)
-        return new ApiError(500, "ERROR")
+        return new ApiError(500, `Error: ${ex}`)
     }
 })
 
