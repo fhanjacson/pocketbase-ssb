@@ -4,19 +4,17 @@ routerUse($apis.activityLogger($app))
 routerAdd("PUT", "/custom_api/items", (c) => {
     try {
         const data = $apis.requestInfo(c).data
+        const existingItem = $app.dao().findRecordById("ssb_items", data.id)
+        if (!existingItem) {
+            return new BadRequestError("No Existing Record with specified Id found")
+
+        }
+        if (data.itemVariationEnabled) {
+            if (!(data.expand.variationId.length > 0)) {
+                return new BadRequestError("itemVariationEnabled is true but variationId.length is not more than 0")
+            }
+        }
         $app.dao().runInTransaction((txDao) => {
-            const existingItem = txDao.findRecordById("ssb_items", data.id)
-            if (!existingItem) {
-                // throw "No Existing Record with specified Id found"
-                return new BadRequestError("No Existing Record with specified Id found")
-
-            }
-            if (data.itemVariationEnabled) {
-                if (!(data.expand.variationId.length > 0)) {
-                    return new BadRequestError("itemVariationEnabled is true but variationId.length is not more than 0")
-                }
-            }
-
             const existingItemForm = new RecordUpsertForm($app, existingItem)
             existingItemForm.setDao(txDao)
 
@@ -27,7 +25,7 @@ routerAdd("PUT", "/custom_api/items", (c) => {
                 for (let variation of data.expand.variationId) {
                     if (variation.id) { //existing variation in db
                         const existingVariation = txDao.findRecordById("ssb_variations", variation.id)
-                        if(!existingVariation) {
+                        if (!existingVariation) {
                             throw "Variation id is defined, but cant be found on db"
                         }
                         const existingVariationForm = new RecordUpsertForm($app, existingVariation)
@@ -58,7 +56,7 @@ routerAdd("PUT", "/custom_api/items", (c) => {
                         upsertedVariationId.push(newVariation.id)
                     }
                 }
-            
+
                 existingItemForm.loadData({
                     itemCode: data.itemCode,
                     itemName: data.itemName,
@@ -72,7 +70,14 @@ routerAdd("PUT", "/custom_api/items", (c) => {
                 })
             }
 
-            if(!data.itemVariationEnabled) {
+            if (!data.itemVariationEnabled) {
+                const findExistingVariation = txDao.findRecordsByFilter("ssb_variations", `itemId = '${data.id}'`)
+                if (findExistingVariation && findExistingVariation.length > 0) {
+                    for (let findExistingVariationItem of findExistingVariation) {
+                        txDao.deleteRecord(findExistingVariationItem)
+                    }
+                }
+
                 existingItemForm.loadData({
                     itemCode: data.itemCode,
                     itemName: data.itemName,
@@ -85,7 +90,7 @@ routerAdd("PUT", "/custom_api/items", (c) => {
                     variationId: upsertedVariationId
                 })
             }
-            
+
             existingItemForm.submit()
 
 

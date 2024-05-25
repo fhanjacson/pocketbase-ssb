@@ -75,7 +75,7 @@ routerAdd("POST", "/custom_api/sales", (c) => {
                 "itemSaleId": insertedItemSaleId
             })
             newSaleForm.submit()
-            $apis.enrichRecord(c, txDao, newSale, "customerId", "itemSaleId")
+            $apis.enrichRecord(c, txDao, newSale, "customerId", "itemSaleId", "itemSaleId.itemId")
             return c.json(200, newSale)
         })
     } catch (ex) {
