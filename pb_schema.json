@@ -138,6 +138,20 @@
           "max": null,
           "pattern": ""
         }
+      },
+      {
+        "system": false,
+        "id": "ejbwb08z",
+        "name": "groupDescription",
+        "type": "text",
+        "required": false,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
       }
     ],
     "indexes": [
@@ -161,7 +175,7 @@
         "id": "ryausv8a",
         "name": "itemId",
         "type": "relation",
-        "required": false,
+        "required": true,
         "presentable": false,
         "unique": false,
         "options": {
@@ -437,7 +451,7 @@
         "id": "5wt2mnnz",
         "name": "customerId",
         "type": "relation",
-        "required": false,
+        "required": true,
         "presentable": false,
         "unique": false,
         "options": {
@@ -748,5 +762,58 @@
     "updateRule": "",
     "deleteRule": "",
     "options": {}
+  },
+  {
+    "id": "p97ymk2z87g5jfq",
+    "name": "ssb_daily_report",
+    "type": "view",
+    "system": false,
+    "schema": [
+      {
+        "system": false,
+        "id": "ysuryejt",
+        "name": "saleDate",
+        "type": "json",
+        "required": false,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "maxSize": 1
+        }
+      },
+      {
+        "system": false,
+        "id": "z7rq8zsn",
+        "name": "totalSalePriceAfterDiscount",
+        "type": "json",
+        "required": false,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "maxSize": 1
+        }
+      },
+      {
+        "system": false,
+        "id": "tqycrpfu",
+        "name": "totalItemBuyPrice",
+        "type": "json",
+        "required": false,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "maxSize": 1
+        }
+      }
+    ],
+    "indexes": [],
+    "listRule": null,
+    "viewRule": null,
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": null,
+    "options": {
+      "query": "SELECT\n    (ROW_NUMBER() OVER()) as id,\n    DATE(s.saleDate) AS saleDate,\n    SUM(si.itemSalePriceAfterDiscount) AS totalSalePriceAfterDiscount,\n    SUM(si.itemSaleQuantity * i.itemBuyPrice) AS totalItemBuyPrice\nFROM\n    ssb_sales s\n    JOIN ssb_item_sale si ON s.id = si.saleId\n    JOIN ssb_items i ON si.itemId = i.id\nGROUP BY\n    DATE(s.saleDate);\n"
+    }
   }
 ]

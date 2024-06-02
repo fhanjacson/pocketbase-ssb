@@ -94,7 +94,7 @@ routerAdd("PUT", "/custom_api/items", (c) => {
             existingItemForm.submit()
 
 
-            $apis.enrichRecord(c, txDao, existingItem, "variationId", "vendorId")
+            $apis.enrichRecord(c, txDao, existingItem, "variationId", "groupId", "vendorId")
             return c.json(200, existingItem)
 
         })
@@ -166,7 +166,7 @@ routerAdd("POST", "/custom_api/items", (c) => {
                 })
                 newItemForm.submit()
             }
-            $apis.enrichRecord(c, txDao, newItem, "variationId", "vendorId")
+            $apis.enrichRecord(c, txDao, newItem, "variationId", "groupId", "vendorId")
             return c.json(200, newItem)
         })
     } catch (ex) {
