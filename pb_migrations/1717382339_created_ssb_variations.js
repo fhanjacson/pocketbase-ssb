@@ -1,16 +1,16 @@
 /// <reference path="../pb_data/types.d.ts" />
 migrate((db) => {
   const collection = new Collection({
-    "id": "nc2ngi1j8bh42ke",
-    "created": "2024-05-21 03:29:22.624Z",
-    "updated": "2024-05-21 03:29:22.624Z",
-    "name": "ssb_item_sale",
+    "id": "ryhiv1779z8oc3n",
+    "created": "2024-06-03 02:38:59.904Z",
+    "updated": "2024-06-03 02:38:59.904Z",
+    "name": "ssb_variations",
     "type": "base",
     "system": false,
     "schema": [
       {
         "system": false,
-        "id": "ryausv8a",
+        "id": "rx4qf36q",
         "name": "itemId",
         "type": "relation",
         "required": false,
@@ -18,22 +18,6 @@ migrate((db) => {
         "unique": false,
         "options": {
           "collectionId": "wz7iyqkntws2e0v",
-          "cascadeDelete": false,
-          "minSelect": null,
-          "maxSelect": 1,
-          "displayFields": null
-        }
-      },
-      {
-        "system": false,
-        "id": "jdysio8v",
-        "name": "saleId",
-        "type": "relation",
-        "required": false,
-        "presentable": false,
-        "unique": false,
-        "options": {
-          "collectionId": "hg7fztvdntklo47",
           "cascadeDelete": true,
           "minSelect": null,
           "maxSelect": 1,
@@ -42,38 +26,36 @@ migrate((db) => {
       },
       {
         "system": false,
-        "id": "iteghewm",
-        "name": "variationId",
-        "type": "relation",
+        "id": "gt3r3ndk",
+        "name": "variationCode",
+        "type": "text",
         "required": false,
         "presentable": false,
         "unique": false,
         "options": {
-          "collectionId": "ryhiv1779z8oc3n",
-          "cascadeDelete": false,
-          "minSelect": null,
-          "maxSelect": 1,
-          "displayFields": null
+          "min": null,
+          "max": null,
+          "pattern": ""
         }
       },
       {
         "system": false,
-        "id": "kejlnvgn",
-        "name": "itemSaleQuantity",
-        "type": "number",
+        "id": "qu2ezuc4",
+        "name": "variationName",
+        "type": "text",
         "required": true,
-        "presentable": false,
+        "presentable": true,
         "unique": false,
         "options": {
           "min": null,
           "max": null,
-          "noDecimal": true
+          "pattern": ""
         }
       },
       {
         "system": false,
-        "id": "3lbkelge",
-        "name": "itemSalePrice",
+        "id": "4fot3faa",
+        "name": "variationStock",
         "type": "number",
         "required": false,
         "presentable": false,
@@ -86,8 +68,8 @@ migrate((db) => {
       },
       {
         "system": false,
-        "id": "heudxleg",
-        "name": "itemSaleDiscount",
+        "id": "zoogyoax",
+        "name": "variationBuyPrice",
         "type": "number",
         "required": false,
         "presentable": false,
@@ -100,8 +82,8 @@ migrate((db) => {
       },
       {
         "system": false,
-        "id": "ddzex7bu",
-        "name": "itemSalePriceAfterDiscount",
+        "id": "06c0hcro",
+        "name": "variationSellPrice",
         "type": "number",
         "required": false,
         "presentable": false,
@@ -110,22 +92,12 @@ migrate((db) => {
           "min": null,
           "max": null,
           "noDecimal": true
-        }
-      },
-      {
-        "system": false,
-        "id": "gwrxorai",
-        "name": "variationJSON",
-        "type": "json",
-        "required": false,
-        "presentable": false,
-        "unique": false,
-        "options": {
-          "maxSize": 2000000
         }
       }
     ],
-    "indexes": [],
+    "indexes": [
+      "CREATE UNIQUE INDEX `idx_hNGfaHk` ON `ssb_variations` (\n  `variationName`,\n  `itemId`\n)"
+    ],
     "listRule": "",
     "viewRule": "",
     "createRule": "",
@@ -137,7 +109,7 @@ migrate((db) => {
   return Dao(db).saveCollection(collection);
 }, (db) => {
   const dao = new Dao(db);
-  const collection = dao.findCollectionByNameOrId("nc2ngi1j8bh42ke");
+  const collection = dao.findCollectionByNameOrId("ryhiv1779z8oc3n");
 
   return dao.deleteCollection(collection);
 })

@@ -1,35 +1,19 @@
 /// <reference path="../pb_data/types.d.ts" />
 migrate((db) => {
   const collection = new Collection({
-    "id": "ryhiv1779z8oc3n",
-    "created": "2024-05-21 03:29:22.624Z",
-    "updated": "2024-05-21 03:29:22.624Z",
-    "name": "ssb_variations",
+    "id": "wz7iyqkntws2e0v",
+    "created": "2024-06-03 02:38:59.904Z",
+    "updated": "2024-06-03 02:38:59.904Z",
+    "name": "ssb_items",
     "type": "base",
     "system": false,
     "schema": [
       {
         "system": false,
-        "id": "rx4qf36q",
-        "name": "itemId",
-        "type": "relation",
-        "required": false,
-        "presentable": false,
-        "unique": false,
-        "options": {
-          "collectionId": "wz7iyqkntws2e0v",
-          "cascadeDelete": true,
-          "minSelect": null,
-          "maxSelect": 1,
-          "displayFields": null
-        }
-      },
-      {
-        "system": false,
-        "id": "gt3r3ndk",
-        "name": "variationCode",
+        "id": "fyg6jgtb",
+        "name": "itemCode",
         "type": "text",
-        "required": false,
+        "required": true,
         "presentable": false,
         "unique": false,
         "options": {
@@ -40,8 +24,8 @@ migrate((db) => {
       },
       {
         "system": false,
-        "id": "qu2ezuc4",
-        "name": "variationName",
+        "id": "akwmbfxc",
+        "name": "itemName",
         "type": "text",
         "required": true,
         "presentable": true,
@@ -54,8 +38,8 @@ migrate((db) => {
       },
       {
         "system": false,
-        "id": "4fot3faa",
-        "name": "variationStock",
+        "id": "swdtwowm",
+        "name": "itemBuyPrice",
         "type": "number",
         "required": false,
         "presentable": false,
@@ -68,8 +52,8 @@ migrate((db) => {
       },
       {
         "system": false,
-        "id": "zoogyoax",
-        "name": "variationBuyPrice",
+        "id": "pjfesqsb",
+        "name": "itemSellPrice",
         "type": "number",
         "required": false,
         "presentable": false,
@@ -82,8 +66,40 @@ migrate((db) => {
       },
       {
         "system": false,
-        "id": "06c0hcro",
-        "name": "variationSellPrice",
+        "id": "k0dwvfap",
+        "name": "groupId",
+        "type": "relation",
+        "required": false,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "collectionId": "1583yzvkdvhfa9l",
+          "cascadeDelete": false,
+          "minSelect": null,
+          "maxSelect": 1,
+          "displayFields": null
+        }
+      },
+      {
+        "system": false,
+        "id": "jhb5ckcc",
+        "name": "vendorId",
+        "type": "relation",
+        "required": false,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "collectionId": "ln1p323ma0mpykd",
+          "cascadeDelete": false,
+          "minSelect": null,
+          "maxSelect": 1,
+          "displayFields": null
+        }
+      },
+      {
+        "system": false,
+        "id": "po6p7hdp",
+        "name": "itemStock",
         "type": "number",
         "required": false,
         "presentable": false,
@@ -93,10 +109,20 @@ migrate((db) => {
           "max": null,
           "noDecimal": true
         }
+      },
+      {
+        "system": false,
+        "id": "ehvvspua",
+        "name": "itemVariationEnabled",
+        "type": "bool",
+        "required": false,
+        "presentable": false,
+        "unique": false,
+        "options": {}
       }
     ],
     "indexes": [
-      "CREATE UNIQUE INDEX `idx_hNGfaHk` ON `ssb_variations` (\n  `variationName`,\n  `itemId`\n)"
+      "CREATE UNIQUE INDEX `idx_dcruCl7` ON `ssb_items` (`itemName`)"
     ],
     "listRule": "",
     "viewRule": "",
@@ -109,7 +135,7 @@ migrate((db) => {
   return Dao(db).saveCollection(collection);
 }, (db) => {
   const dao = new Dao(db);
-  const collection = dao.findCollectionByNameOrId("ryhiv1779z8oc3n");
+  const collection = dao.findCollectionByNameOrId("wz7iyqkntws2e0v");
 
   return dao.deleteCollection(collection);
 })

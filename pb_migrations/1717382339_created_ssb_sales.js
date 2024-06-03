@@ -1,19 +1,48 @@
 /// <reference path="../pb_data/types.d.ts" />
 migrate((db) => {
   const collection = new Collection({
-    "id": "wz7iyqkntws2e0v",
-    "created": "2024-05-21 03:29:22.624Z",
-    "updated": "2024-05-21 03:29:22.624Z",
-    "name": "ssb_items",
+    "id": "hg7fztvdntklo47",
+    "created": "2024-06-03 02:38:59.904Z",
+    "updated": "2024-06-03 02:38:59.904Z",
+    "name": "ssb_sales",
     "type": "base",
     "system": false,
     "schema": [
       {
         "system": false,
-        "id": "fyg6jgtb",
-        "name": "itemCode",
-        "type": "text",
+        "id": "5wt2mnnz",
+        "name": "customerId",
+        "type": "relation",
         "required": true,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "collectionId": "685p99vdc6pd0ox",
+          "cascadeDelete": false,
+          "minSelect": null,
+          "maxSelect": 1,
+          "displayFields": null
+        }
+      },
+      {
+        "system": false,
+        "id": "uajrb25u",
+        "name": "saleDate",
+        "type": "date",
+        "required": true,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "min": "",
+          "max": ""
+        }
+      },
+      {
+        "system": false,
+        "id": "y0up1d5o",
+        "name": "saleDeliveryContact",
+        "type": "text",
+        "required": false,
         "presentable": false,
         "unique": false,
         "options": {
@@ -24,11 +53,11 @@ migrate((db) => {
       },
       {
         "system": false,
-        "id": "akwmbfxc",
-        "name": "itemName",
+        "id": "qys5xj1q",
+        "name": "saleDeliveryAddress",
         "type": "text",
-        "required": true,
-        "presentable": true,
+        "required": false,
+        "presentable": false,
         "unique": false,
         "options": {
           "min": null,
@@ -38,8 +67,22 @@ migrate((db) => {
       },
       {
         "system": false,
-        "id": "swdtwowm",
-        "name": "itemBuyPrice",
+        "id": "6wkqvwfz",
+        "name": "saleTotalAmount",
+        "type": "number",
+        "required": true,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "min": null,
+          "max": null,
+          "noDecimal": true
+        }
+      },
+      {
+        "system": false,
+        "id": "91yh5v68",
+        "name": "saleDiscountAmount",
         "type": "number",
         "required": false,
         "presentable": false,
@@ -52,8 +95,8 @@ migrate((db) => {
       },
       {
         "system": false,
-        "id": "pjfesqsb",
-        "name": "itemSellPrice",
+        "id": "chk874an",
+        "name": "saleTotalAfterDiscount",
         "type": "number",
         "required": false,
         "presentable": false,
@@ -66,80 +109,37 @@ migrate((db) => {
       },
       {
         "system": false,
-        "id": "k0dwvfap",
-        "name": "groupId",
-        "type": "relation",
+        "id": "hxyi0y2z",
+        "name": "salePaymentAmount",
+        "type": "number",
         "required": false,
         "presentable": false,
         "unique": false,
         "options": {
-          "collectionId": "1583yzvkdvhfa9l",
-          "cascadeDelete": false,
-          "minSelect": null,
+          "min": null,
+          "max": null,
+          "noDecimal": true
+        }
+      },
+      {
+        "system": false,
+        "id": "sv1xpgrl",
+        "name": "salePaymentType",
+        "type": "select",
+        "required": false,
+        "presentable": false,
+        "unique": false,
+        "options": {
           "maxSelect": 1,
-          "displayFields": null
-        }
-      },
-      {
-        "system": false,
-        "id": "jhb5ckcc",
-        "name": "vendorId",
-        "type": "relation",
-        "required": false,
-        "presentable": false,
-        "unique": false,
-        "options": {
-          "collectionId": "ln1p323ma0mpykd",
-          "cascadeDelete": false,
-          "minSelect": null,
-          "maxSelect": 1,
-          "displayFields": null
-        }
-      },
-      {
-        "system": false,
-        "id": "po6p7hdp",
-        "name": "itemStock",
-        "type": "number",
-        "required": false,
-        "presentable": false,
-        "unique": false,
-        "options": {
-          "min": null,
-          "max": null,
-          "noDecimal": true
-        }
-      },
-      {
-        "system": false,
-        "id": "ehvvspua",
-        "name": "itemVariationEnabled",
-        "type": "bool",
-        "required": false,
-        "presentable": false,
-        "unique": false,
-        "options": {}
-      },
-      {
-        "system": false,
-        "id": "ujioguzl",
-        "name": "variationId",
-        "type": "relation",
-        "required": false,
-        "presentable": false,
-        "unique": false,
-        "options": {
-          "collectionId": "ryhiv1779z8oc3n",
-          "cascadeDelete": false,
-          "minSelect": null,
-          "maxSelect": null,
-          "displayFields": null
+          "values": [
+            "CASH",
+            "DEBIT",
+            "TRANSFER"
+          ]
         }
       }
     ],
-    "indexes": [
-      "CREATE UNIQUE INDEX `idx_dcruCl7` ON `ssb_items` (`itemName`)"
-    ],
+    "indexes": [],
     "listRule": "",
     "viewRule": "",
     "createRule": "",
@@ -151,7 +151,7 @@ migrate((db) => {
   return Dao(db).saveCollection(collection);
 }, (db) => {
   const dao = new Dao(db);
-  const collection = dao.findCollectionByNameOrId("wz7iyqkntws2e0v");
+  const collection = dao.findCollectionByNameOrId("hg7fztvdntklo47");
 
   return dao.deleteCollection(collection);
 })

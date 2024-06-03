@@ -2,8 +2,8 @@
 migrate((db) => {
   const collection = new Collection({
     "id": "1583yzvkdvhfa9l",
-    "created": "2024-05-21 03:29:22.624Z",
-    "updated": "2024-05-21 03:29:22.624Z",
+    "created": "2024-06-03 02:38:59.904Z",
+    "updated": "2024-06-03 02:38:59.904Z",
     "name": "ssb_groups",
     "type": "base",
     "system": false,
@@ -15,6 +15,20 @@ migrate((db) => {
         "type": "text",
         "required": true,
         "presentable": true,
+        "unique": false,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      },
+      {
+        "system": false,
+        "id": "ejbwb08z",
+        "name": "groupDescription",
+        "type": "text",
+        "required": false,
+        "presentable": false,
         "unique": false,
         "options": {
           "min": null,

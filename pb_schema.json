@@ -412,22 +412,6 @@
         "presentable": false,
         "unique": false,
         "options": {}
-      },
-      {
-        "system": false,
-        "id": "ujioguzl",
-        "name": "variationId",
-        "type": "relation",
-        "required": false,
-        "presentable": false,
-        "unique": false,
-        "options": {
-          "collectionId": "ryhiv1779z8oc3n",
-          "cascadeDelete": false,
-          "minSelect": null,
-          "maxSelect": null,
-          "displayFields": null
-        }
       }
     ],
     "indexes": [
@@ -473,22 +457,6 @@
         "options": {
           "min": "",
           "max": ""
-        }
-      },
-      {
-        "system": false,
-        "id": "20awk5yu",
-        "name": "itemSaleId",
-        "type": "relation",
-        "required": false,
-        "presentable": false,
-        "unique": false,
-        "options": {
-          "collectionId": "nc2ngi1j8bh42ke",
-          "cascadeDelete": false,
-          "minSelect": null,
-          "maxSelect": null,
-          "displayFields": null
         }
       },
       {

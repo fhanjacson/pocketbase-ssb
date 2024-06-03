@@ -4,13 +4,12 @@ routerUse($apis.activityLogger($app))
 routerAdd("POST", "/custom_api/sales", (c) => {
     try {
         const data = $apis.requestInfo(c).data
-        if (!data.expand.itemSaleId) {
+        if (!data.expand.ssb_item_sale_via_saleId) {
             return new BadRequestError("itemSaleId is not valid")
         }
-        if (data.expand.itemSaleId.length <= 0) {
+        if (data.expand.ssb_item_sale_via_saleId.length <= 0) {
             return new BadRequestError("itemSaleId length must be greater than 0")
         }
-
         $app.dao().runInTransaction((txDao) => {
             const salesCollection = txDao.findCollectionByNameOrId("ssb_sales")
             const newSale = new Record(salesCollection)
@@ -19,7 +18,6 @@ routerAdd("POST", "/custom_api/sales", (c) => {
             newSaleForm.loadData({
                 "customerId": data.customerId, // user
                 "saleDate": data.saleDate, // user
-                "itemSaleId": undefined, // sys
                 "saleDeliveryContact": data.saleDeliveryContact, // user
                 "saleDeliveryAddress": data.saleDeliveryAddress, // user
                 "saleTotalAmount": data.saleTotalAmount, // user
@@ -30,7 +28,7 @@ routerAdd("POST", "/custom_api/sales", (c) => {
             })
             newSaleForm.submit()
             var insertedItemSaleId = []
-            for (let itemSale of data.expand.itemSaleId) {
+            for (let itemSale of data.expand.ssb_item_sale_via_saleId) {
                 if (itemSale.expand.itemId.itemVariationEnabled) {
                     if (!itemSale.expand.variationId.id) {
                         return new BadRequestError("Item Variation Enabled but no variationId")
@@ -70,12 +68,7 @@ routerAdd("POST", "/custom_api/sales", (c) => {
                     itemForm.submit()
                 }
             }
-
-            newSaleForm.loadData({
-                "itemSaleId": insertedItemSaleId
-            })
-            newSaleForm.submit()
-            $apis.enrichRecord(c, txDao, newSale, "customerId", "itemSaleId", "itemSaleId.itemId")
+            $apis.enrichRecord(c, txDao, newSale, "customerId", "ssb_item_sale_via_saleId", "ssb_item_sale_via_saleId.itemId")
             return c.json(200, newSale)
         })
     } catch (ex) {
