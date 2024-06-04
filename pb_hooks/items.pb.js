@@ -52,8 +52,8 @@ routerAdd("PUT", "/custom_api/items", (c) => {
                         variationForm.submit()
                     })
 
+                    const variationCollection = txDao.findCollectionByNameOrId("ssb_variations")
                     payloadVariationToCreate.forEach(payloadVariation => {
-                        const variationCollection = txDao.findCollectionByNameOrId("ssb_variations")
                         const newVariation = new Record(variationCollection)
                         const variationForm = new RecordUpsertForm($app, newVariation)
                         variationForm.setDao(txDao)
