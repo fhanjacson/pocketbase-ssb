@@ -31,54 +31,45 @@ routerAdd("PUT", "/custom_api/items", (c) => {
 
             if (data.itemVariationEnabled === true) {
                 if (data.expand.ssb_variations_via_itemId.length > 0) {
-                    const variationCollection = txDao.findCollectionByNameOrId("ssb_variations")
-                    const existingVariationByItemId = txDao.findRecordsByFilter("ssb_variations", `itemId = '${data.id}'`)
+                    const dbVariation = txDao.findRecordsByFilter("ssb_variations", `itemId = '${data.id}'`)
+                    const payloadVariationIds = data.expand.ssb_variations_via_itemId.map(variation => variation.id)
 
-                    const variationIdFromDatabase = new Set(existingVariationByItemId.map(variation => variation.id))
-                    const variationIdFromPayload = new Set(data.expand.ssb_variations_via_itemId.map(variation => variation.id))
+                    const dbVariationToEdit = dbVariation.filter(variation => payloadVariationIds.includes(variation.id))
+                    const payloadVariationToCreate = data.expand.ssb_variations_via_itemId.filter(variation => !variation.id)
+                    const dbVariationToDelete = dbVariation.filter(variation => !payloadVariationIds.includes(variation.id))
 
-                    // const variationToEdit = variationIdFromDatabase.intersection(variationIdFromPayload)
-                    // const variationToCreate = variationIdFromPayload.difference(variationIdFromDatabase)
-                    // const variationToDelete = variationIdFromDatabase.difference(variationIdFromPayload)
-
-                    const variationToEdit = [...variationIdFromDatabase].filter(id => variationIdFromPayload.has(id))
-                    const variationToCreate = [...variationIdFromPayload].filter(id => !variationIdFromDatabase.has(id))
-                    const variationToDelete = [...variationIdFromDatabase].filter(id => !variationIdFromPayload.has(id))
-
-                    variationToEdit.forEach(variationToEditId => {
-                        const existingVariation = existingVariationByItemId.find(variation => variation.id === variationToEditId)
-                        const variationData = data.expand.ssb_variations_via_itemId.find(variation => variation.id === variationToEditId)
-                        const variationForm = new RecordUpsertForm($app, existingVariation)
+                    dbVariationToEdit.forEach(dbVariation => {
+                        const payloadVariation = data.expand.ssb_variations_via_itemId.find(variation => variation.id === dbVariation.id)
+                        const variationForm = new RecordUpsertForm($app, dbVariation)
                         variationForm.setDao(txDao)
                         variationForm.loadData({
                             itemId: data.id,
-                            variationCode: variationData.variationCode,
-                            variationName: variationData.variationName,
-                            variationBuyPrice: variationData.variationBuyPrice,
-                            variationSellPrice: variationData.variationSellPrice
+                            variationCode: payloadVariation.variationCode,
+                            variationName: payloadVariation.variationName,
+                            variationBuyPrice: payloadVariation.variationBuyPrice,
+                            variationSellPrice: payloadVariation.variationSellPrice
                         })
                         variationForm.submit()
                     })
 
-                    variationToCreate.forEach(variationToCreateId => {
-                        const variationData = data.expand.ssb_variations_via_itemId.find(variation => variation.id === variationToCreateId)
+                    payloadVariationToCreate.forEach(payloadVariation => {
+                        const variationCollection = txDao.findCollectionByNameOrId("ssb_variations")
                         const newVariation = new Record(variationCollection)
                         const variationForm = new RecordUpsertForm($app, newVariation)
                         variationForm.setDao(txDao)
                         variationForm.loadData({
                             itemId: data.id,
-                            variationCode: variationData.variationCode,
-                            variationName: variationData.variationName,
-                            variationStock: variationData.variationStock,
-                            variationBuyPrice: variationData.variationBuyPrice,
-                            variationSellPrice: variationData.variationSellPrice
+                            variationCode: payloadVariation.variationCode,
+                            variationName: payloadVariation.variationName,
+                            variationStock: payloadVariation.variationStock,
+                            variationBuyPrice: payloadVariation.variationBuyPrice,
+                            variationSellPrice: payloadVariation.variationSellPrice
                         })
                         variationForm.submit()
                     })
 
-                    variationToDelete.forEach(variationToDeleteId => {
-                        const variationData = existingVariationByItemId.find(variation => variation.id === variationToDeleteId)
-                        txDao.deleteRecord(variationData)
+                    dbVariationToDelete.forEach(dbVariation => {
+                        txDao.deleteRecord(dbVariation)
                     })
 
                     $apis.enrichRecord(c, txDao, existingItem, "groupId", "vendorId", "ssb_variations_via_itemId")
