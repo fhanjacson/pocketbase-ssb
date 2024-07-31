@@ -6,14 +6,17 @@ onAfterBootstrap((e) => {
     try {
         $app.dao().runInTransaction(txDao => {
             txDao.db().newQuery("SELECT * FROM users WHERE username = 'system' LIMIT 1").all(systemUser)
-            console.log(JSON.stringify(systemUser))
             if (systemUser.length === 0) {
                 const userCollection = $app.dao().findCollectionByNameOrId("users")
                 const userRecord = new Record(userCollection)
                 const userForm = new RecordUpsertForm($app, userRecord)
                 userForm.setDao(txDao)
                 userForm.loadData({
-                    username: "system"
+                    username: "system",
+                    password: "12345",
+                    passwordConfirm: "12345",
+                    name: "SYSTEM",
+                    role: "ADMIN"
                 })
                 userForm.submit()
             }
