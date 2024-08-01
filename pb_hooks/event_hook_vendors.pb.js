@@ -1,10 +1,8 @@
 /// <reference path="../pb_data/types.d.ts" />
 
 onRecordBeforeCreateRequest((e) => {
-    console.log(123)
     e.record.set("name", e.record.getString("name").toUpperCase())
     const authRecord = e.httpContext.get("authRecord")
-    console.log(authRecord)
     if (authRecord) {
         e.record.set("createdBy", authRecord.id)
         e.record.set("updatedBy", authRecord.id)
