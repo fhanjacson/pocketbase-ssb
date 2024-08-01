@@ -7,6 +7,7 @@ routerAdd("POST", "/custom_api/purchases", (c) => {
         const enums = require(`${__hooks}/_enums.js`)
         const data = $apis.requestInfo(c).data
         const authRecord = c.get("authRecord")
+        if (!authRecord) { return new BadRequestError("Auth is required.")}
         if (!data.vendorId) {
             return new BadRequestError("vendorId is not valid")
         }
@@ -134,6 +135,7 @@ routerAdd("PUT", "/custom_api/purchases", (c) => {
         const data = $apis.requestInfo(c).data
         const enums = require(`${__hooks}/_enums.js`)
         const authRecord = c.get("authRecord")
+        if (!authRecord) { return new BadRequestError("Auth is required.")}
         const utils = require(`${__hooks}/function_validator.js`)
         const error = utils.validateUpdatePurchase(data)
         if (error) {

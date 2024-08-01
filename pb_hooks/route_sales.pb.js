@@ -5,6 +5,7 @@ routerAdd("POST", "/custom_api/sales", (c) => {
     try {
         const enums = require(`${__hooks}/_enums.js`)
         const authRecord = c.get("authRecord")
+        if (!authRecord) { return new BadRequestError("Auth is required.")}
         const data = $apis.requestInfo(c).data
         if (!data.customerId) { return new BadRequestError("customerId is not valid") }
         if (!data.expand.saleItems_via_saleId) { return new BadRequestError("saleItemId is not valid") }
@@ -121,6 +122,7 @@ routerAdd("PUT", "/custom_api/sales", (c) => {
     try {
         const enums = require(`${__hooks}/_enums.js`)
         const authRecord = c.get("authRecord")
+        if (!authRecord) { return new BadRequestError("Auth is required.")}
         const data = $apis.requestInfo(c).data
         if (!data.customerId) { return new BadRequestError("customerId is not valid") }
         if (!data.expand.saleItems_via_saleId) { return new BadRequestError("saleItemId is not valid") }

@@ -7,6 +7,7 @@ routerAdd("POST", "/custom_api/items", (c) => {
         const enums = require(`${__hooks}/_enums.js`)
         const data = $apis.requestInfo(c).data
         const authRecord = c.get("authRecord")
+        if (!authRecord) { return new BadRequestError("Auth is required.")}
 
         const returnValue = utils.validateCreateItem(data)
         if (returnValue) {
@@ -139,6 +140,8 @@ routerAdd("POST", "/custom_api/items", (c) => {
 routerAdd("PUT", "/custom_api/items", (c) => {
     try {
         const data = $apis.requestInfo(c).data
+        const authRecord = c.get("authRecord")
+        if (!authRecord) { return new BadRequestError("Auth is required.")}
         const existingItem = $app.dao().findRecordById("items", data.id)
         if (!existingItem) {
             return new BadRequestError("No Existing Record with specified Id found")
